@@ -103,6 +103,18 @@ static void liberarBiblioteca(void)
 static void exibirMenu(void)
 {
     // TODO: implementar exibição do menu principal com as opções de impressão
+    printf("1 - Configurar Conexao\n");
+    printf("2 - Abrir Conexao\n");
+    printf("3 - Impressao Texto\n");
+    printf("4 - Impressao QRCode\n");
+    printf("5 - Impressao Cod Barras\n");
+    printf("6 - Impressao XML SAT\n");
+    printf("7 - Impressao XML Canc SAT\n");
+    printf("8 - Abrir Gaveta Elgin\n");
+    printf("9 - Abrir Gaveta\n");
+    printf("10 - Sinal Sonoro\n");
+    printf("0 - Fechar Conexao e Sair\n");
+    printf("\n");
 }
 
 static void configurarConexao(void)
@@ -113,6 +125,51 @@ static void configurarConexao(void)
 static void abrirConexao(void)
 {
     // TODO: chamar AbreConexaoImpressora e validar retorno
+    int tipo_impressora = 0;
+    int modelo_impressora = 0;
+    int conexao_impressora = 0;
+    
+    while (tipo_impressora < 1 || tipo_impressora > 5) {
+	    printf("Digite o tipo da impressora:\n");
+	    printf("1 - USB\n");
+	    printf("2 - RS232\n");
+	    printf("3 - TCP-IP\n");
+	    printf("4 - Bluetooth\n");
+	    printf("5 - Impressoras Acopladas (Android)\n");
+    
+    	scanf("%d", &tipo_impressora);
+	}
+    
+    while (modelo_impressora < 1 || modelo_impressora > 5) {
+	    printf("Digite o modelo da impressora:\n");
+	    printf("1 - i7\n");
+	    printf("2 - i7 Plus\n");
+	    printf("3 - i8\n");
+	    printf("4 - i9\n");
+	    printf("5 - ix\n");
+	    printf("6 - ix\n");
+	    printf("7 - Fitpos\n");
+	    printf("8 - BK-T681\n");
+	    printf("9 - MP-4200 (TH e ADV)\n");
+	    printf("10 - MP-4200 HS\n");
+	    printf("11 - MK\n");
+	    printf("12 - MP-2800\n");
+    
+    	scanf("%d", &modelo_impressora);
+	}
+    
+    while (conexao_impressora < 1 || conexao_impressora > 5) {
+	    printf("Digite o tipo da impressora:\n");
+	    printf("1 - USB\n");
+	    printf("2 - RS232\n");
+	    printf("3 - TCP-IP\n");
+	    printf("4 - Bluetooth\n");
+	    printf("5 - Impressoras Acopladas (Android)\n");
+    
+    	scanf("%d", &conexao_impressora);
+	}
+    
+    //AbreConexaoImpressora()
 }
 
 static void fecharConexao(void)
@@ -185,8 +242,13 @@ int main(void)
     while (1) {
         
         //construir o menu e chamar as funçoes aqui!!!
+        exibirMenu();
         
-                
+        scanf("%d", &opcao);
+        switch(opcao) {
+        	case 0: return 0;
+        	case 1: abrirConexao(); break;
+		}
         
     }
 }
