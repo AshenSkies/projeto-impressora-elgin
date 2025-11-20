@@ -140,7 +140,7 @@ static void abrirConexao(void)
     	scanf("%d", &tipo_impressora);
 	}
     
-    while (modelo_impressora < 1 || modelo_impressora > 5) {
+    while (modelo_impressora < 1 || modelo_impressora > 12) {
 	    printf("Digite o modelo da impressora:\n");
 	    printf("1 - i7\n");
 	    printf("2 - i7 Plus\n");
