@@ -6,7 +6,7 @@
 /* ======================= Config DLL ======================= */
 static HMODULE g_hDll = NULL;
 
-/* Convenção de chamada (Windows): __stdcall */
+/* Convenï¿½ï¿½o de chamada (Windows): __stdcall */
 #ifndef CALLCONV
 #  define CALLCONV WINAPI
 #endif
@@ -41,7 +41,7 @@ static ImprimeXMLSAT_t                ImprimeXMLSAT                = NULL;
 static ImprimeXMLCancelamentoSAT_t    ImprimeXMLCancelamentoSAT    = NULL;
 static InicializaImpressora_t         InicializaImpressora         = NULL;
 
-/* ======================= Configuração ======================= */
+/* ======================= Configuraï¿½ï¿½o ======================= */
 static int   g_tipo      = 1;
 static char  g_modelo[64] = "i9";
 static char  g_conexao[128] = "USB";
@@ -53,7 +53,7 @@ static int   g_conectada = 0;
     do {                                                                         \
         name = (name##_t)GetProcAddress((HMODULE)(h), #name);                    \
         if (!(name)) {                                                           \
-            fprintf(stderr, "Falha ao resolver símbolo %s (erro=%lu)\n",         \
+            fprintf(stderr, "Falha ao resolver sï¿½mbolo %s (erro=%lu)\n",         \
                     #name, GetLastError());                                      \
             return 0;                                                            \
         }                                                                        \
@@ -64,7 +64,7 @@ static void flush_entrada(void) {
     while ((c = getchar()) != '\n' && c != EOF) { }
 }
 
-/* ======================= Funções para manipular a DLL ======================= */
+/* ======================= Funï¿½ï¿½es para manipular a DLL ======================= */
 static int carregarFuncoes(void)
 {
     g_hDll = LoadLibraryA("E1_Impressora01.dll");
@@ -98,11 +98,11 @@ static void liberarBiblioteca(void)
     }
 }
 
-/* ======================= Funções a serem implementadas pelos alunos ======================= */
+/* ======================= Funï¿½ï¿½es a serem implementadas pelos alunos ======================= */
 
 static void exibirMenu(void)
 {
-    // TODO: implementar exibição do menu principal com as opções de impressão
+    // TODO: implementar exibiï¿½ï¿½o do menu principal com as opï¿½ï¿½es de impressï¿½o
     printf("1 - Configurar Conexao\n");
     printf("2 - Abrir Conexao\n");
     printf("3 - Impressao Texto\n");
@@ -124,11 +124,12 @@ int conexao_impressora = 0;
 char modelo_impressora_value[100];
 char conexao_impressora_value[100];
 int conexao_configurada = 1;
-    
+
+// Configura a conexï¿½o com o dispositivo, pedindo parametros do mesmo.
 static void configurarConexao(void)
 {
 	flush_entrada();
-    // TODO: pedir ao usuário tipo, modelo, conexão e parâmetro
+    // TODO: pedir ao usuï¿½rio tipo, modelo, conexï¿½o e parï¿½metro
     
     // opcoes de tipo
     while (tipo_impressora < 1 || tipo_impressora > 5) {
@@ -199,7 +200,7 @@ static void configurarConexao(void)
 
 int conexao_aberta = 1;
 
-// Abre uma conexão caso a mesma esteja configurada.
+// Abre uma conexï¿½o caso a mesma esteja configurada.
 // Retorna ao menu caso contrario.
 static void abrirConexao(void)
 {	
@@ -221,7 +222,7 @@ static void abrirConexao(void)
 	
 }
 
-// Fecha a conexão seguramente.
+// Fecha a conexï¿½o seguramente.
 static void fecharConexao(void)
 {
     // TODO: chamar FechaConexaoImpressora e tratar retorno
@@ -234,11 +235,11 @@ static void fecharConexao(void)
     
 }
 
-// Pede um input de texto e formatação ao usuário, e imprime.
+// Pede um input de texto e formataï¿½ï¿½o ao usuï¿½rio, e imprime.
 static void imprimirTexto(void)
 {
 	flush_entrada();
-    // TODO: solicitar texto do usuário e chamar ImpressaoTexto
+    // TODO: solicitar texto do usuï¿½rio e chamar ImpressaoTexto
     // incluir AvancaPapel e Corte no final
     if (conexao_aberta != 0) {
 		printf("A impressora nao esta conectada.\n");
@@ -290,11 +291,11 @@ static void imprimirTexto(void)
     
 }
 
-// Pede um input de texto e formatação ao usuário, e imprime em formato de QRCode
+// Pede um input de texto e formataï¿½ï¿½o ao usuï¿½rio, e imprime em formato de QRCode
 static void imprimirQRCode(void)
 {
 	flush_entrada();
-    // TODO: solicitar conteúdo do QRCode e chamar ImpressaoQRCode(texto, 6, 4)
+    // TODO: solicitar conteï¿½do do QRCode e chamar ImpressaoQRCode(texto, 6, 4)
     // incluir AvancaPapel e Corte no final
     if (conexao_aberta != 0) {
 		printf("A impressora nao esta conectada.\n");
@@ -330,7 +331,7 @@ static void imprimirQRCode(void)
 	}
 }
 
-// Imprime um código de barras de teste.
+// Imprime um cï¿½digo de barras de teste.
 static void imprimirCodigoBarras(void)
 {
 	flush_entrada();
@@ -367,7 +368,7 @@ static void imprimirXMLSAT(void)
 
     // Tratamento de retorno
     if (ret == 0)
-        printf("Impressão concluída via caminho.\n");
+        printf("Impressao concluida via caminho.\n");
     else
         printf("Erro ao imprimir XMLSAT (ret=%d)\n", ret);
     
@@ -376,7 +377,7 @@ static void imprimirXMLSAT(void)
     Corte(0);
 }
 
-// Imprime um SAT de um arquivo XML de teste.
+// Imprime um SAT de cancelamento de um arquivo XML de teste.
 static void imprimirXMLCancelamentoSAT(void)
 {
 	flush_entrada();
@@ -409,7 +410,7 @@ static void imprimirXMLCancelamentoSAT(void)
 
     // Tratamento de retorno
     if (ret == 0)
-        printf("Impressão concluída via caminho.\n");
+        printf("Impressao concluida via caminho.\n");
     else
         printf("Erro ao imprimir XMLSAT (ret=%d)\n", ret);
     
@@ -418,6 +419,7 @@ static void imprimirXMLCancelamentoSAT(void)
     Corte(0);
 }
 
+// Abre a Gaveta com os padrï¿½es Elgin.
 static void abrirGavetaElginOpc(void)
 {
 	flush_entrada();
@@ -429,6 +431,7 @@ static void abrirGavetaElginOpc(void)
     AbreGavetaElgin(1, 50, 50);
 }
 
+// Abre a Gaveta com parametros customizados.
 static void abrirGavetaOpc(void)
 {
 	flush_entrada();
@@ -440,6 +443,7 @@ static void abrirGavetaOpc(void)
     AbreGaveta(1, 5, 10);
 }
 
+// Emite um sinal sonoro com parametro de duracao.
 static void emitirSinalSonoro(void)
 {
 	flush_entrada();
@@ -447,11 +451,18 @@ static void emitirSinalSonoro(void)
 		printf("A impressora nao esta conectada.\n");
 		return;
 	}
+	int tamanho = -1;
+	while (tamanho < 10 || tamanho > 50) {
+	    printf("Digite a duraï¿½ï¿½o dos bipes (entre 10 e 50):\n");
+    
+    	scanf("%d", &tamanho);
+    	printf("\n");
+	}
     // TODO: chamar SinalSonoro(4, 50, 5)
-    SinalSonoro(4, 10, 5);
+    SinalSonoro(4, tamanho, 5);
 }
 
-/* ======================= Função principal ======================= */
+/* ======================= Funï¿½ï¿½o principal ======================= */
 int main(void)
 {
     if (!carregarFuncoes()) {
@@ -461,7 +472,7 @@ int main(void)
     int opcao = 0;
     while (1) {
         
-        //construir o menu e chamar as funçoes aqui!!!
+        //construir o menu e chamar as funï¿½oes aqui!!!
         exibirMenu();
         scanf("%d", &opcao);
         switch(opcao) {
