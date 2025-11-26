@@ -117,18 +117,20 @@ static void exibirMenu(void)
     printf("\n");
 }
 
+// buffers  de configuracao
+int tipo_impressora = 0;
+int modelo_impressora = 0;
+int conexao_impressora = 0;
+char modelo_impressora_value[100];
+char conexao_impressora_value[100];
+int conexao_configurada = 1;
+    
 static void configurarConexao(void)
 {
+	flush_entrada();
     // TODO: pedir ao usuário tipo, modelo, conexão e parâmetro
-}
-
-static void abrirConexao(void)
-{
-    // TODO: chamar AbreConexaoImpressora e validar retorno
-    int tipo_impressora = 0;
-    int modelo_impressora = 0;
-    int conexao_impressora = 0;
     
+    // opcoes de tipo
     while (tipo_impressora < 1 || tipo_impressora > 5) {
 	    printf("Digite o tipo da impressora:\n");
 	    printf("1 - USB\n");
@@ -138,8 +140,10 @@ static void abrirConexao(void)
 	    printf("5 - Impressoras Acopladas (Android)\n");
     
     	scanf("%d", &tipo_impressora);
+    	printf("\n");
 	}
     
+    // opcoes de modelo
     while (modelo_impressora < 1 || modelo_impressora > 12) {
 	    printf("Digite o modelo da impressora:\n");
 	    printf("1 - i7\n");
@@ -147,19 +151,33 @@ static void abrirConexao(void)
 	    printf("3 - i8\n");
 	    printf("4 - i9\n");
 	    printf("5 - ix\n");
-	    printf("6 - ix\n");
-	    printf("7 - Fitpos\n");
-	    printf("8 - BK-T681\n");
-	    printf("9 - MP-4200 (TH e ADV)\n");
-	    printf("10 - MP-4200 HS\n");
-	    printf("11 - MK\n");
-	    printf("12 - MP-2800\n");
+	    printf("6 - Fitpos\n");
+	    printf("7 - BK-T681\n");
+	    printf("8 - MP-4200 (TH e ADV)\n");
+	    printf("9 - MP-4200 HS\n");
+	    printf("10 - MK\n");
+	    printf("11 - MP-2800\n");
     
     	scanf("%d", &modelo_impressora);
+    	printf("\n");
+	}
+	switch(modelo_impressora){
+    	case 1: strcpy(modelo_impressora_value, "i7"); break;
+    	case 2: strcpy(modelo_impressora_value, "i7 Plus"); break;
+    	case 3: strcpy(modelo_impressora_value, "i8"); break;
+    	case 4: strcpy(modelo_impressora_value, "i9"); break;
+    	case 5: strcpy(modelo_impressora_value, "ix"); break;
+    	case 6: strcpy(modelo_impressora_value, "Fitpos"); break;
+    	case 7: strcpy(modelo_impressora_value, "BK-T681"); break;
+    	case 8: strcpy(modelo_impressora_value, "MP-4200 (TH e ADV)"); break;
+    	case 9: strcpy(modelo_impressora_value, "MP-4200 HS"); break;
+    	case 10: strcpy(modelo_impressora_value, "MK"); break;
+    	case 11: strcpy(modelo_impressora_value, "MP-2800"); break;
 	}
     
+    // opcoes de conexao
     while (conexao_impressora < 1 || conexao_impressora > 5) {
-	    printf("Digite o tipo da impressora:\n");
+	    printf("Digite o tipo da conexao:\n");
 	    printf("1 - USB\n");
 	    printf("2 - RS232\n");
 	    printf("3 - TCP-IP\n");
@@ -167,42 +185,201 @@ static void abrirConexao(void)
 	    printf("5 - Impressoras Acopladas (Android)\n");
     
     	scanf("%d", &conexao_impressora);
+    	printf("\n");
 	}
-    
-    //AbreConexaoImpressora()
+	switch(modelo_impressora){
+    	case 1: strcpy(conexao_impressora_value, "USB"); break;
+    	case 2: strcpy(conexao_impressora_value, "COM2"); break;
+    	case 3: strcpy(conexao_impressora_value, "192.168.0.20"); break;
+    	case 4: strcpy(conexao_impressora_value, "AA:BB:CC:DD:EE:FF"); break;
+    	case 5: strcpy(conexao_impressora_value, ""); break;
+	}
+	conexao_configurada = 0;
 }
 
+int conexao_aberta = 1;
+
+// Abre uma conexão caso a mesma esteja configurada.
+// Retorna ao menu caso contrario.
+static void abrirConexao(void)
+{	
+	// TODO: chamar AbreConexaoImpressora e validar retorno
+	if (conexao_configurada != 0) {
+		printf("A conexao ainda nao foi configurada.\n\n");
+		return;
+	}
+	else if (conexao_aberta == 0) {
+		printf("Ja ha uma conexao pre-estabelecida.\n\n");
+		return;
+	}
+	int ret = AbreConexaoImpressora(tipo_impressora, modelo_impressora_value, conexao_impressora_value, 0);
+	if (ret != 0) {
+		printf("Houve um erro de codigo %d durante a abertura de conexao.", ret);
+		return;
+	}
+	conexao_aberta = 0;
+	
+}
+
+// Fecha a conexão seguramente.
 static void fecharConexao(void)
 {
     // TODO: chamar FechaConexaoImpressora e tratar retorno
+	if (conexao_aberta != 0) {
+		printf("A conexao ainda nao foi estabelecida com a impressora.\n\n");
+		return;
+	}
+	FechaConexaoImpressora();
+	conexao_aberta = 1;
+    
 }
 
+// Pede um input de texto e formatação ao usuário, e imprime.
 static void imprimirTexto(void)
 {
+	flush_entrada();
     // TODO: solicitar texto do usuário e chamar ImpressaoTexto
     // incluir AvancaPapel e Corte no final
+    if (conexao_aberta != 0) {
+		printf("A impressora nao esta conectada.\n");
+		return;
+	}
+	
+	char conteudo[30];
+	printf("Digite o conteudo da impressao: ");
+	scanf("%s", &conteudo);
+	
+	int posicao = 0;
+	while (posicao < 1 || posicao > 3) {
+	    printf("Digite o alinhamento da impressao:\n");
+	    printf("1 - Esquerda\n");
+	    printf("2 - Centro\n");
+	    printf("3 - Direita\n");
+    
+    	scanf("%d", &posicao);
+    	printf("\n");
+	}
+	posicao = posicao-1;
+	
+	int tamanho = -1;
+	while (tamanho < 0 || (tamanho > 7 && tamanho < 16) || tamanho > 16) {
+	    printf("Digite o tamanho da impressao:\n");
+	    printf("0\n");
+	    printf("1\n");
+	    printf("2\n");
+	    printf("3\n");
+	    printf("4\n");
+	    printf("5\n");
+	    printf("6\n");
+	    printf("7\n");
+	    printf("16\n");
+    
+    	scanf("%d", &tamanho);
+    	printf("\n");
+	}
+    	
+	int ret = ImpressaoTexto(conteudo, posicao, 0, tamanho);
+	
+	if(ret >= 0){
+		printf("Impressao OK...\n");
+		AvancaPapel(5);
+		Corte(2);
+	}else{
+		printf("Erro. Retorno de valor %d \n", ret);
+	}
+    
 }
 
+// Pede um input de texto e formatação ao usuário, e imprime em formato de QRCode
 static void imprimirQRCode(void)
 {
+	flush_entrada();
     // TODO: solicitar conteúdo do QRCode e chamar ImpressaoQRCode(texto, 6, 4)
     // incluir AvancaPapel e Corte no final
+    if (conexao_aberta != 0) {
+		printf("A impressora nao esta conectada.\n");
+		return;
+	}
+	
+	char conteudo[30];
+	printf("Digite o conteudo do QRCode: ");
+	scanf("%s", &conteudo);
+	
+	int tamanho = -1;
+	while (tamanho < 1 || tamanho > 6) {
+	    printf("Digite o tamanho da impressao:\n");
+	    printf("1\n");
+	    printf("2\n");
+	    printf("3\n");
+	    printf("4\n");
+	    printf("5\n");
+	    printf("6\n");
+    
+    	scanf("%d", &tamanho);
+    	printf("\n");
+	}
+    	
+	int ret = ImpressaoQRCode(conteudo, tamanho, 2);
+	
+	if(ret >= 0){
+		printf("Impressao OK\n");
+		AvancaPapel(5);
+		Corte(2);
+	}else{
+		printf("Erro. Retorno de valor %d \n", ret);
+	}
 }
 
+// Imprime um código de barras de teste.
 static void imprimirCodigoBarras(void)
 {
+	flush_entrada();
     // TODO: usar ImpressaoCodigoBarras(8, "{A012345678912", 100, 2, 3)
     // incluir AvancaPapel e Corte no final
+    if (conexao_aberta != 0) {
+		printf("A impressora nao esta conectada.\n");
+		return;
+	}
+    	
+	int ret = ImpressaoCodigoBarras(8, "{A012345678912", 100, 2, 3);
+	
+	if(ret >= 0){
+		printf("Impressao OK\n");
+		AvancaPapel(5);
+		Corte(2);
+	}else{
+		printf("Erro. Retorno de valor %d \n", ret);
+	}
 }
 
+// Imprime um SAT de um arquivo XML de teste.
 static void imprimirXMLSAT(void)
 {
-    // TODO: ler o arquivo ./XMLSAT.xml e enviar via ImprimeXMLSAT
-    // incluir AvancaPapel e Corte no final
+	flush_entrada();
+    if (conexao_aberta != 0) {
+		printf("A impressora nao esta conectada.\n");
+		return;
+	}
+    const char *file_path = "path=./XMLSAT.xml";
+
+    // Chama a funcao de impressao do XML do SAT
+    int ret = ImprimeXMLSAT(file_path, 0);
+
+    // Tratamento de retorno
+    if (ret == 0)
+        printf("Impressão concluída via caminho.\n");
+    else
+        printf("Erro ao imprimir XMLSAT (ret=%d)\n", ret);
+    
+    // Avanca o papel por 5 linhas e realiza o corte
+    AvancaPapel(5);
+    Corte(0);
 }
 
+// Imprime um SAT de um arquivo XML de teste.
 static void imprimirXMLCancelamentoSAT(void)
 {
+	flush_entrada();
     // TODO: ler o arquivo ./CANC_SAT.xml e chamar ImprimeXMLCancelamentoSAT
     // incluir AvancaPapel e Corte no final
     
@@ -214,21 +391,64 @@ static void imprimirXMLCancelamentoSAT(void)
         "p0ccqnZvuE70aHOI09elpjEO6Cd+orI7XHHrFCwhFhAcbalc+ZfO5b/+vkyAHS6C"
         "YVFCDtYR9Hi5qgdk31v23w==";
         */
+	
+    if (conexao_aberta != 0) {
+		printf("A impressora nao esta conectada.\n");
+		return;
+	}
+    const char *file_path = "path=./CANC_SAT.xml";
+    const char *assinatura = "Q5DLkpdRijIRGY6YSSNsTWK1TztHL1vD0V1Jc4spo/CEUqICEb9SFy82ym8EhBRZ"
+                             "jbh3btsZhF+sjHqEMR159i4agru9x6KsepK/q0E2e5xlU5cv3m1woYfgHyOkWDNc"
+                             "SdMsS6bBh2Bpq6s89yJ9Q6qh/J8YHi306ce9Tqb/drKvN2XdE5noRSS32TAWuaQE"
+                             "Vd7u+TrvXlOQsE3fHR1D5f1saUwQLPSdIv01NF6Ny7jZwjCwv1uNDgGZONJdlTJ6"
+                             "p0ccqnZvuE70aHOI09elpjEO6Cd+orI7XHHrFCwhFhAcbalc+ZfO5b/+vkyAHS6C"
+                             "YVFCDtYR9Hi5qgdk31v23w==";
+    
+    // Chama a funcao de impressao do XML de cancelamento do SAT
+    int ret = ImprimeXMLCancelamentoSAT(file_path, assinatura, 0);
+
+    // Tratamento de retorno
+    if (ret == 0)
+        printf("Impressão concluída via caminho.\n");
+    else
+        printf("Erro ao imprimir XMLSAT (ret=%d)\n", ret);
+    
+    // Avanca o papel por 5 linhas e realiza o corte
+    AvancaPapel(5);
+    Corte(0);
 }
 
 static void abrirGavetaElginOpc(void)
 {
+	flush_entrada();
+    if (conexao_aberta != 0) {
+		printf("A impressora nao esta conectada.\n");
+		return;
+	}
     // TODO: chamar AbreGavetaElgin(1, 50, 50)
+    AbreGavetaElgin(1, 50, 50);
 }
 
 static void abrirGavetaOpc(void)
 {
+	flush_entrada();
+    if (conexao_aberta != 0) {
+		printf("A impressora nao esta conectada.\n");
+		return;
+	}
     // TODO: chamar AbreGaveta(1, 5, 10)
+    AbreGaveta(1, 5, 10);
 }
 
 static void emitirSinalSonoro(void)
 {
+	flush_entrada();
+    if (conexao_aberta != 0) {
+		printf("A impressora nao esta conectada.\n");
+		return;
+	}
     // TODO: chamar SinalSonoro(4, 50, 5)
+    SinalSonoro(4, 10, 5);
 }
 
 /* ======================= Função principal ======================= */
@@ -243,11 +463,19 @@ int main(void)
         
         //construir o menu e chamar as funçoes aqui!!!
         exibirMenu();
-        
         scanf("%d", &opcao);
         switch(opcao) {
-        	case 0: return 0;
-        	case 1: abrirConexao(); break;
+        	case 1: configurarConexao(); break;
+        	case 2: abrirConexao(); break;
+        	case 3: imprimirTexto(); break;
+        	case 4: imprimirQRCode(); break;
+        	case 5: imprimirCodigoBarras(); break;
+        	case 6: imprimirXMLSAT(); break;
+        	case 7: imprimirXMLCancelamentoSAT(); break;
+        	case 8: abrirGavetaElginOpc(); break;
+        	case 9: abrirGavetaOpc(); break;
+        	case 10: emitirSinalSonoro(); break;
+        	case 0: fecharConexao(); return 0;
 		}
         
     }
