@@ -6,7 +6,7 @@
 /* ======================= Config DLL ======================= */
 static HMODULE g_hDll = NULL;
 
-/* Convenção de chamada (Windows): __stdcall */
+/* Convenï¿½ï¿½o de chamada (Windows): __stdcall */
 #ifndef CALLCONV
 #  define CALLCONV WINAPI
 #endif
@@ -41,7 +41,7 @@ static ImprimeXMLSAT_t                ImprimeXMLSAT                = NULL;
 static ImprimeXMLCancelamentoSAT_t    ImprimeXMLCancelamentoSAT    = NULL;
 static InicializaImpressora_t         InicializaImpressora         = NULL;
 
-/* ======================= Configuração ======================= */
+/* ======================= Configuraï¿½ï¿½o ======================= */
 static int   g_tipo      = 1;
 static char  g_modelo[64] = "i9";
 static char  g_conexao[128] = "USB";
@@ -53,7 +53,7 @@ static int   g_conectada = 0;
     do {                                                                         \
         name = (name##_t)GetProcAddress((HMODULE)(h), #name);                    \
         if (!(name)) {                                                           \
-            fprintf(stderr, "Falha ao resolver símbolo %s (erro=%lu)\n",         \
+            fprintf(stderr, "Falha ao resolver sï¿½mbolo %s (erro=%lu)\n",         \
                     #name, GetLastError());                                      \
             return 0;                                                            \
         }                                                                        \
@@ -64,7 +64,7 @@ static void flush_entrada(void) {
     while ((c = getchar()) != '\n' && c != EOF) { }
 }
 
-/* ======================= Funções para manipular a DLL ======================= */
+/* ======================= Funï¿½ï¿½es para manipular a DLL ======================= */
 static int carregarFuncoes(void)
 {
     g_hDll = LoadLibraryA("E1_Impressora01.dll");
@@ -98,11 +98,11 @@ static void liberarBiblioteca(void)
     }
 }
 
-/* ======================= Funções a serem implementadas pelos alunos ======================= */
+/* ======================= Funï¿½ï¿½es a serem implementadas pelos alunos ======================= */
 
 static void exibirMenu(void)
 {
-    // TODO: implementar exibição do menu principal com as opções de impressão
+    // TODO: implementar exibiï¿½ï¿½o do menu principal com as opï¿½ï¿½es de impressï¿½o
     printf("1 - Configurar Conexao\n");
     printf("2 - Abrir Conexao\n");
     printf("3 - Impressao Texto\n");
@@ -119,7 +119,7 @@ static void exibirMenu(void)
 
 static void configurarConexao(void)
 {
-    // TODO: pedir ao usuário tipo, modelo, conexão e parâmetro
+    // TODO: pedir ao usuï¿½rio tipo, modelo, conexï¿½o e parï¿½metro
 }
 
 static void abrirConexao(void)
@@ -179,13 +179,13 @@ static void fecharConexao(void)
 
 static void imprimirTexto(void)
 {
-    // TODO: solicitar texto do usuário e chamar ImpressaoTexto
+    // TODO: solicitar texto do usuï¿½rio e chamar ImpressaoTexto
     // incluir AvancaPapel e Corte no final
 }
 
 static void imprimirQRCode(void)
 {
-    // TODO: solicitar conteúdo do QRCode e chamar ImpressaoQRCode(texto, 6, 4)
+    // TODO: solicitar conteï¿½do do QRCode e chamar ImpressaoQRCode(texto, 6, 4)
     // incluir AvancaPapel e Corte no final
 }
 
@@ -197,8 +197,20 @@ static void imprimirCodigoBarras(void)
 
 static void imprimirXMLSAT(void)
 {
-    // TODO: ler o arquivo ./XMLSAT.xml e enviar via ImprimeXMLSAT
-    // incluir AvancaPapel e Corte no final
+    const char *file_path = "path=./XMLSAT.xml";
+
+    // Chama a funcao de impressao do XML do SAT
+    int ret = ImprimeXMLSAT(file_path, 0);
+
+    // Tratamento de retorno
+    if (ret == 0)
+        printf("ImpressÃ£o concluÃ­da via caminho.\n");
+    else
+        printf("Erro ao imprimir XMLSAT (ret=%d)\n", ret);
+    
+    // Avanca o papel por 5 linhas e realiza o corte
+    AvancaPapel(5);
+    Corte(0);
 }
 
 static void imprimirXMLCancelamentoSAT(void)
@@ -214,24 +226,48 @@ static void imprimirXMLCancelamentoSAT(void)
         "p0ccqnZvuE70aHOI09elpjEO6Cd+orI7XHHrFCwhFhAcbalc+ZfO5b/+vkyAHS6C"
         "YVFCDtYR9Hi5qgdk31v23w==";
         */
+
+    const char *file_path = "path=./CANC_SAT.xml";
+    const char *assinatura = "Q5DLkpdRijIRGY6YSSNsTWK1TztHL1vD0V1Jc4spo/CEUqICEb9SFy82ym8EhBRZ"
+                             "jbh3btsZhF+sjHqEMR159i4agru9x6KsepK/q0E2e5xlU5cv3m1woYfgHyOkWDNc"
+                             "SdMsS6bBh2Bpq6s89yJ9Q6qh/J8YHi306ce9Tqb/drKvN2XdE5noRSS32TAWuaQE"
+                             "Vd7u+TrvXlOQsE3fHR1D5f1saUwQLPSdIv01NF6Ny7jZwjCwv1uNDgGZONJdlTJ6"
+                             "p0ccqnZvuE70aHOI09elpjEO6Cd+orI7XHHrFCwhFhAcbalc+ZfO5b/+vkyAHS6C"
+                             "YVFCDtYR9Hi5qgdk31v23w==";
+    
+    // Chama a funcao de impressao do XML de cancelamento do SAT
+    int ret = ImprimeXMLCancelamentoSAT(file_path, assinatura, 0);
+
+    // Tratamento de retorno
+    if (ret == 0)
+        printf("ImpressÃ£o concluÃ­da via caminho.\n");
+    else
+        printf("Erro ao imprimir XMLSAT (ret=%d)\n", ret);
+    
+    // Avanca o papel por 5 linhas e realiza o corte
+    AvancaPapel(5);
+    Corte(0);
 }
 
 static void abrirGavetaElginOpc(void)
 {
     // TODO: chamar AbreGavetaElgin(1, 50, 50)
+    AbreGavetaElgin(1, 50, 50);
 }
 
 static void abrirGavetaOpc(void)
 {
     // TODO: chamar AbreGaveta(1, 5, 10)
+    AbreGaveta(1, 5, 10);
 }
 
 static void emitirSinalSonoro(void)
 {
     // TODO: chamar SinalSonoro(4, 50, 5)
+    SinalSonoro(4, 50, 5);
 }
 
-/* ======================= Função principal ======================= */
+/* ======================= Funï¿½ï¿½o principal ======================= */
 int main(void)
 {
     if (!carregarFuncoes()) {
@@ -241,7 +277,7 @@ int main(void)
     int opcao = 0;
     while (1) {
         
-        //construir o menu e chamar as funçoes aqui!!!
+        //construir o menu e chamar as funï¿½oes aqui!!!
         exibirMenu();
         
         scanf("%d", &opcao);
