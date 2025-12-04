@@ -148,3 +148,10 @@ Finaliza a DLL ao sair do programa.
 
 - Alguns modelos de impressora têm limitações em cortes e QRCodes.
 - O programa assume que a DLL está presente e atualizada.
+
+## Participantes
+- Kaio Vinicyus
+- João Lucas
+- John Lennon
+- Ranyelle Melo
+- Ryan Moreira Silva
